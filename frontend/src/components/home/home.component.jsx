@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const API = process.env.REACT_APP_API;
 
 export const Home = () => {
-  const [name, setName] = useState("");
+  const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${API}/new_transaction`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        content,
-      }),
-    });
-    await res.json();
+    let data = {
+      'author' : author,
+      'content' : content
+    };
 
-    setName("");
+    axios
+      .post(`${API}/new_transaction`, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+      )
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      
+    setAuthor("");
     setContent("");
   }
 
@@ -32,8 +40,8 @@ export const Home = () => {
             <label for="author">Author</label>
             <input 
               type="text"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
+              onChange={(e) => setAuthor(e.target.value)}
+              value={author}
               className="form-control"
               id="author"
               placeholder="Author name"
